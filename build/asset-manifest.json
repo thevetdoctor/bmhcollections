@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.4311abab.css",
+    "main.js": "/static/js/main.2bdbac76.js",
+    "static/js/787.95d5a5fc.chunk.js": "/static/js/787.95d5a5fc.chunk.js",
+    "static/media/bmh-blue-1.png": "/static/media/bmh-blue-1.f59b5f2f37fbe4e1d1ac.png",
+    "index.html": "/index.html",
+    "main.4311abab.css.map": "/static/css/main.4311abab.css.map",
+    "main.2bdbac76.js.map": "/static/js/main.2bdbac76.js.map",
+    "787.95d5a5fc.chunk.js.map": "/static/js/787.95d5a5fc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4311abab.css",
+    "static/js/main.2bdbac76.js"
+  ]
+}
