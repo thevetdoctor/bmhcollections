@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars*/
 import React, { useState } from 'react';
 import logo from './bmh-blue-1.png';
 import {FaShareAlt, FaMoon, FaCamera} from 'react-icons/fa';
