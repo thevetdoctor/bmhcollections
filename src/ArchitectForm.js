@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars*/
 import React, { useState } from 'react';
 import logo from './bmh-blue-1.png';
-import {FaShareAlt, FaMoon, FaCamera} from 'react-icons/fa';
-import {IoArrowBack} from 'react-icons/io5';
+import { FaShareAlt, FaMoon, FaCamera } from 'react-icons/fa';
+import { IoArrowBack } from 'react-icons/io5';
 import { Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -27,10 +27,10 @@ export default function ArchitectForm() {
 
     const baseUrl = 'https://us-central1-build-myhouse.cloudfunctions.net/bmhAPi';
 
-    const setUp = async() => {
+    const setUp = async () => {
         setSubmitted(true)
-        const payload = {firstName, lastName, mobile, email, profileImage, contactMessage, floorPlanTime, singleResidentialTime, projectUrl, projectWorkTime, charge}
-        if((firstName && lastName && mobile && email && profileImage && contactMessage && floorPlanTime && singleResidentialTime && projectUrl && projectWorkTime && charge)) {
+        const payload = { firstName, lastName, mobile, email, profileImage, contactMessage, floorPlanTime, singleResidentialTime, projectUrl, projectWorkTime, charge }
+        if ((firstName && lastName && mobile && email && profileImage && contactMessage && floorPlanTime && singleResidentialTime && projectUrl && projectWorkTime && charge)) {
             setCompleted(false);
             console.log('Incomplete details')
             console.log(payload);
@@ -39,181 +39,185 @@ export default function ArchitectForm() {
         setCompleted(true);
 
         const query = `
-        mutation {
-            createArchitectProfile(
-                firstname: "${firstName}",
-                lastname: "${lastName}",
-                mobile: "${mobile}",
-                email: "${email}",
-                description: "${contactMessage}",
-                profileImage: "${profileImage}",
-                projectUrl: "${projectUrl}",
-                floorPlanTime: "${floorPlanTime}",
-                singleResidentialTime: "${singleResidentialTime}",
-                projectWorkTime: "${projectWorkTime}",
-                charge: "${charge}"
-            ) {
-                id
-                firstName
-                lastName
-                email
-                mobile
-                description
-                profileImage
-                projectUrl
-                floorPlanTime
-                singleResidentialTime
-                projectWorkTime
-                charge
-            }
+            mutation {
+                createArchitectProfile(
+                    firstname: "${firstName}",
+                    lastname: "${lastName}",
+                    mobile: "${mobile}",
+                    email: "${email}",
+                    description: "${contactMessage}",
+                    profileImage: "${profileImage}",
+                    projectUrl: "${projectUrl}",
+                    floorPlanTime: "${floorPlanTime}",
+                    singleResidentialTime: "${singleResidentialTime}",
+                    projectWorkTime: "${projectWorkTime}",
+                    charge: "${charge}"
+                ) {
+                    id
+                    firstName
+                    lastName
+                    email
+                    mobile
+                    description
+                    profileImage
+                    projectUrl
+                    floorPlanTime
+                    singleResidentialTime
+                    projectWorkTime
+                    charge
+                }
             }`;
-            
-            const res = await axios({
-                method: 'POST',
-                url: `${baseUrl}/graphql?query=${query}`,
-                headers: {
-                    'Content-Type': 'application/json'
+
+        const res = await axios({
+            method: 'POST',
+            url: `${baseUrl}/graphql?query=${query}`,
+            headers: {
+                'Content-Type': 'application/json'
             }
-            })
+        })
             .catch(error => {
-                if(error.isAxiosError) {
+                if (error.isAxiosError) {
                     setError(error.response?.data?.error);
                 }
             });
-            if(res && res.data) {
-               console.log(res.data.errors)
-               if(res.data.errors[0].message.search('exist') >= 0) {
-                   toast("Already submitted!");
-               } else {
-                   toast("Submitted successfully!");
-                }
-                setFirstName('');
-                setLastName('');
-                setMobile('');
-                setEmail('');
-                setFloorPlanTime('');
-                setSingleResidentialTime('');
-                setProjectUrl('');
-                setProjectWorkTime('');
-                setCharge('');
-                setContactMessage('');
-                document.location.reload();
-               setCompleted(true);
-            } else {
-                console.log(error);
-                toast('Please check your network');
-            }
-        };
 
-        const handleImage = async(e) => {
-            
+        if (res && res.data) {
+            console.log(res.data.errors)
+            if (res.data.errors[0].message.search('exist') >= 0) {
+                toast("Already submitted!");
+            } else {
+                toast("Submitted successfully!");
+            }
+            setFirstName('');
+            setLastName('');
+            setMobile('');
+            setEmail('');
+            setFloorPlanTime('');
+            setSingleResidentialTime('');
+            setProjectUrl('');
+            setProjectWorkTime('');
+            setCharge('');
+            setContactMessage('');
+            document.location.reload();
+            setCompleted(true);
+        } else {
+            console.log(error);
+            toast('Please check your network');
+        }
+    };
+
+    const handleImage = async (e) => {
+
         const serviceImage = e.target.files[0];
         const data = new FormData();
         const url = "https://api.cloudinary.com/v1_1/thevetdoctor/image/upload";
         data.append("file", serviceImage);
         data.append("upload_preset", "zunt8yrw");
         const res = await fetch(url, {
-              method: "POST",
-              body: data
-            })
+            method: "POST",
+            body: data
+        })
             .catch(error => {
                 console.log(error.message);
-                if(error.message.search('Failed to fetch') >= 0) {
+                if (error.message.search('Failed to fetch') >= 0) {
                     toast("Image upload failed!");
                 }
             });
-            // console.log(res)
-            if(res) {
-                console.log(res)
-            } else {
-                console.log('error');
-            }
-            const imgLink = await res.json();
-            // console.log(profileImage, imgLink.secure_url);
-            setProfileImage(imgLink.secure_url)
+        // console.log(res)
+        if (res) {
+            console.log(res)
+        } else {
+            console.log('error');
         }
-        
-        const handleChange = (e) => {
-            const target = e.target;
-            console.log(target, target.value)
-            if(target.name === 'firstname') {
-                setFirstName(target.value);
-            } else if(target.name === 'lastname') {
-                setLastName(target.value);
-            } else if(target.name === 'mobile') {
-                setMobile(target.value);
-            } else if(target.name === 'email') {
-                setEmail(target.value);
-            } else if(target.name === 'floorplantime') {
-                setFloorPlanTime(target.value);
-            } else if(target.name === 'singleresidentialtime') {
-                setSingleResidentialTime(target.value);
-        } else if(target.name === 'projecturl') {
+        const imgLink = await res.json();
+        // console.log(profileImage, imgLink.secure_url);
+        setProfileImage(imgLink.secure_url)
+    }
+
+    const handleChange = (e) => {
+        const target = e.target;
+        console.log(target, target.value)
+        if (target.name === 'firstname') {
+            setFirstName(target.value);
+        } else if (target.name === 'lastname') {
+            setLastName(target.value);
+        } else if (target.name === 'mobile') {
+            setMobile(target.value);
+        } else if (target.name === 'email') {
+            setEmail(target.value);
+        } else if (target.name === 'floorplantime') {
+            setFloorPlanTime(target.value);
+        } else if (target.name === 'singleresidentialtime') {
+            setSingleResidentialTime(target.value);
+        } else if (target.name === 'projecturl') {
             setProjectUrl(target.value);
-        } else if(target.name === 'projectworktime') {
+        } else if (target.name === 'projectworktime') {
             setProjectWorkTime(target.value);
-        } else if(target.name === 'charge') {
+        } else if (target.name === 'charge') {
             setCharge(target.value);
-        } else if(target.name === 'contactmessage') {
+        } else if (target.name === 'contactmessage') {
             setContactMessage(target.value);
         }
     };
-    
+
     return (
         <div>
-      <div style={{fontSize: "0.5em"}} className="bg-white">
-          {/* <DisplayModal /> */}
-          <ToastContainer />
+            <div style={{ fontSize: "0.5em" }} className="bg-white">
+                {/* <DisplayModal /> */}
+                <ToastContainer />
 
-          {/* <div>
+                {/* <div>
           Your submission was successful..A member of BMH would get back to you soon
 
           </div> */}
-          <div className='flex justify-between m-4'>
-                <div><img src={logo} style={{width: '5em', marginTop: '1.1em'}} alt='alt' /></div>
-                <div className='flex mt-3 mr-3'>
-                    <span style={{borderRadius: '50%'}} className='hover:bg-gray-200 cursor-pointer flex align-center shadow-lg p-3 border'>
-                      <span className=''><FaShareAlt size={15} /></span>
-                    </span>
-                    <span style={{borderRadius: '50%'}} className='hover:bg-gray-200 cursor-pointer ml-2 shadow-lg p-3 border'>
-                        <span className='mt-2'><FaMoon size={13} /></span>
-                    </span>
-                  <span style={{borderRadius: '50%'}} className='hover:bg-gray-200 cursor-pointer ml-2 shadow-lg p-3 border'>
-                      <span className='mt-2'><IoArrowBack size={18} /></span>
-                    </span>
+                <div className='flex justify-between m-4'>
+                    <div><img src={logo} style={{ width: '5em', marginTop: '1.1em' }} alt='alt' /></div>
+                    <div className='flex mt-3 mr-3'>
+                        <span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer flex align-center shadow-lg p-3 border'>
+                            <span className=''><FaShareAlt size={15} /></span>
+                        </span>
+                        <span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer ml-2 shadow-lg p-3 border'>
+                            <span className='mt-2'><FaMoon size={13} /></span>
+                        </span>
+                        <span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer ml-2 shadow-lg p-3 border'>
+                            <span className='mt-2'><IoArrowBack size={18} /></span>
+                        </span>
+                    </div>
                 </div>
-          </div>
-            <form action="" method="post" style={{fontSize: "1.2em"}} className="text-md flex flex-col p-2 mb-1" id="contactForm">
-                    <input type="text" id="ProfilePic" style={{display: "none"}} />
+
+                <div className="text-lg text-center px-4 font-semibold mt-8">Create Profile</div>
+
+                <form action="" method="post" style={{ fontSize: "1.2em" }} className="text-md flex flex-col p-2 mb-1 md:w-1/2 mx-auto" id="contactForm">
+                    <input type="text" id="ProfilePic" style={{ display: "none" }} />
                     <div className="text-md flex flex-col p-2">
-                        <label className="text-md flex justify-between p-2 py-3 mb-0"><span>Kindly state your Firstname (so we might have it displayed on the app)</span><Required /></label>
+                        <label className="text-md flex justify-between py-2 py-3 mb-0"><span>Kindly state your Firstname (so we might have it displayed on the app)</span><Required /></label>
                         <Input name="firstname" firstName={firstName} handleChange={handleChange} />
                     </div>
                     <div className="text-md flex flex-col p-2">
-                        <label className="text-md flex justify-between p-2 mb-1"><span>Kindly state your Lastname</span>
-                        <Required /></label>
+                        <label className="text-md flex justify-between py-2 mb-1"><span>Kindly state your Lastname</span>
+                            <Required /></label>
                         <Input name="lastname" lastName={lastName} handleChange={handleChange} />
                     </div>
                     <div className="text-md flex flex-col p-2">
-                        <label className="text-md flex justify-between p-2 mb-1">Kindly provide your Mobile (so we might
+                        <label className="text-md flex justify-between py-2 mb-1">Kindly provide your Mobile (so we might
                             easily contact you)<Required /></label>
                         <Input name="mobile" mobile={mobile} handleChange={handleChange} />
                     </div>
                     <div className="text-md flex flex-col p-2">
-                        <label className="text-md flex justify-between p-2 mb-1">Kindly provide your Email
-                        <Required /></label>
+                        <label className="text-md flex justify-between py-2 mb-1">Kindly provide your Email
+                            <Required /></label>
                         <Input name="email" email={email} handleChange={handleChange} />
                     </div>
                     <div className="text-md flex flex-col p-2">
-                        <label className="text-md flex justify-between p-2 mb-1">Kindly attach an image of yourself
-                        <Required /></label>
-                        <label style={{width: '6em', fontSize: '1.1em'}} className={`font-bold cursor-pointer flex border border-2 ml-2 rounded-lg ${profileImage ? 'bg-white text-black' : 'bg-black text-white'}`}><span className='p-2 pr-3'>{profileImage ? 'Uploaded' : 'Upload'} </span> <span className='ml-2'></span>
-                        
-                        <input type="file" style={{fontSize: '1.4em'}} className="text-md hidden outline-none rounded" placeholder={profileImage ? profileImage : 'No file chosen'} value="" onChange={(e) => handleImage(e)} accept="image/*;capture" /></label>
+                        <label className="text-md flex justify-between py-2 mb-1">Kindly attach an image of yourself
+                            <Required /></label>
+                        <label style={{ width: '6em', fontSize: '1.1em' }} className={`font-bold cursor-pointer flex border border-2 ml-2 rounded-lg ${profileImage ? 'bg-white text-black' : 'bg-black text-white'}`}><span className='p-2 pr-3'>{profileImage ? 'Uploaded' : 'Upload'} </span> <span className='ml-2'></span>
+
+                            <input type="file" style={{ fontSize: '1.4em' }} className="text-md hidden outline-none rounded" placeholder={profileImage ? profileImage : 'No file chosen'} value="" onChange={(e) => handleImage(e)} accept="image/*;capture" /></label>
                     </div>
                     <div className="text-md flex flex-col p-2">
-                        <label style={{fontSize: '1.4em'}} className="">How would you describe yourself (kindly highlight your work strengths and weakness and how you want customers to view you)</label>
-                        <textarea name="contactmessage" style={{fontSize: '0.9em', height: '10em'}} className="rounded outline-none p-3 focus:border focus:border-gray-500" value={contactMessage} onChange={handleChange}
+                        <label className="text-base ">How would you describe yourself (kindly highlight your work strengths and weakness and how you want customers to view you)</label>
+                        <textarea name="contactmessage" style={{ fontSize: '0.9em', height: '10em' }} className="rounded outline-none p-3 border resize-none focus:border focus:border-gray-500" value={contactMessage} onChange={handleChange}
                         ></textarea>
                     </div>
                     <div className="text-md flex flex-col p-2">
@@ -251,51 +255,51 @@ export default function ArchitectForm() {
                     </div>
                     <br />
                     <div className="">
-                        <div style={{fontSize: '1.5em'}} className='text-center text-md text-red-600 mb-2'>{(!completed && submitted) && "Please fill in all fields !"}</div>
-                        <div style={{fontSize: '1.5em'}} className="text-white bg-black text-center mx-3 rounded p-2 hover:bg-gray-500 cursor-pointer mb-9 rounded-lg shadow-md contactSubmitButton" onClick={setUp}>Submit</div>
+                        <div style={{ fontSize: '1.5em' }} className='text-center text-md text-red-600 mb-2'>{(!completed && submitted) && "Please fill in all fields !"}</div>
+                        <div style={{ fontSize: '1.5em' }} className="text-white bg-black text-center mx-3 rounded p-2 hover:bg-gray-500 cursor-pointer mb-9 rounded-lg shadow-md contactSubmitButton" onClick={setUp}>Submit</div>
                     </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 const Required = () => (
-    <span style={{fontSize: '0.6em'}} className='text-xs text-gray-400 mb-1'>(required)</span>
-    )
-    
-    const Input = ({name, value, submitted, handleChange}) => (
-        <input type="text" name={name} value={value} onChange={handleChange} style={{fontSize: '1.5em'}} className={`focus-none focus:border focus:border-gray-500 outline-none rounded-lg border p-3 -mt-2 ${(submitted && value === '') && 'border-red-500'}`} />
-        )
-        
-        
+    <span style={{ fontSize: '0.6em' }} className='text-xs text-gray-400 mb-1'>(required)</span>
+)
+
+const Input = ({ name, value, submitted, handleChange }) => (
+    <input type="text" name={name} value={value} onChange={handleChange} style={{ fontSize: '1.5em' }} className={`focus-none focus:border focus:border-gray-500 outline-none rounded-lg border p-3 -mt-2 ${(submitted && value === '') && 'border-red-500'}`} />
+)
+
+
 const DisplayModal = () => (
-        <div>
+    <div>
         <Modal
             show='true'
             // onHide={() => handleShow()}
             dialogClassName="modal-90w"
-            style={{top: '10%', bottom: '0', height: '10em'}}
+            style={{ top: '10%', bottom: '0', height: '10em' }}
             className=""
             size="lg">
-            <Modal.Header style={{fontWeight: 'bold'}}>
+            <Modal.Header style={{ fontWeight: 'bold' }}>
                 Successful
             </Modal.Header>
-            <Modal.Body style={{textAlign: 'justify', width: '50%'}} className='pt-0 p-2'>
-                
-              <div className='card-text'>
-              Your submission was successful..A member of BMH would get back to you soon
-              </div>
+            <Modal.Body style={{ textAlign: 'justify', width: '50%' }} className='pt-0 p-2'>
+
+                <div className='card-text'>
+                    Your submission was successful..A member of BMH would get back to you soon
+                </div>
             </Modal.Body>
         </Modal>
-        </div>
-    )
-    
+    </div>
+)
+
 
 
                 // const query = `{
                 //     architectprofiles{
-                //         firstName, 
+                //         firstName,
                 //         lastName,
                 //         email,
                 //         mobile,

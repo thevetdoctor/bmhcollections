@@ -3,3 +3,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+label{
+  font-size: 13px !important;
+  padding: 1em 0 !important;
+}
+
+input, textarea{
+  border-radius: 5px !important;
+}
