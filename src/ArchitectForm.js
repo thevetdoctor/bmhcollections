@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars*/
+import 'react-toastify/dist/ReactToastify.css';
 import React, { useState } from 'react';
-import logo from './bmh-blue-1.png';
 import { FaShareAlt, FaMoon, FaCamera } from 'react-icons/fa';
 import { IoArrowBack } from 'react-icons/io5';
 import { Modal } from 'react-bootstrap';
-import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { submitInfo, uploadImage } from './api';
+import logo from './bmh-blue-1.png';
 
-export default function ArchitectForm() {
+export default function ArchitectForm ({ onCompleted }) {
 
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
@@ -25,8 +25,6 @@ export default function ArchitectForm() {
 	const [submitted, setSubmitted] = useState(false);
 	const [profileImage, setProfileImage] = useState('');
 	const [isSubmitting, setSubmitting] = useState(false);
-
-	const baseUrl = 'https://us-central1-build-myhouse.cloudfunctions.net/bmhAPi';
 
 	const setUp = async (e) => {
 		e.preventDefault();
@@ -45,96 +43,32 @@ export default function ArchitectForm() {
 			return;
 		}
 
-
-		const query = `
-			mutation {
-				createArchitectProfile(
-					firstname: "${firstName}",
-					lastname: "${lastName}",
-					mobile: "${mobile}",
-					email: "${email}",
-					description: "${contactMessage}",
-					profileImage: "${profileImage}",
-					projectUrl: "${projectUrl}",
-					floorPlanTime: "${floorPlanTime}",
-					singleResidentialTime: "${singleResidentialTime}",
-					projectWorkTime: "${projectWorkTime}",
-					charge: "${charge}"
-				) {
-					id
-					firstName
-					lastName
-					email
-					mobile
-					description
-					profileImage
-					projectUrl
-					floorPlanTime
-					singleResidentialTime
-					projectWorkTime
-					charge
-				}
-			}`;
-
 		setSubmitting(true);
-		
-		const res = await axios({
-			method: 'POST',
-			url: `${baseUrl}/graphql?query=${query}`,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.catch(error => {
-				if (error.isAxiosError) {
-					setError(error.response?.data?.error);
-				}
-			});
+	
+		const payload = { firstName, lastName, mobile, email, profileImage, contactMessage, floorPlanTime, singleResidentialTime, projectUrl, projectWorkTime, charge };
 
+		const response = await submitInfo(payload);
 		setSubmitting(false);
 
-		if (res && res.data) {
-			if (res.data.errors[0].message.search('exist') >= 0) {
-				toast.info("Already submitted!");
-			} else {
-				toast.success("Submitted successfully!");
-			}
-
-			document.location.reload();
-			setCompleted(true);
-		} else {
-			console.error(error);
-			toast.error('Sorry, an error occurred. Please check your network');
+		if(response.error){
+			toast.error(error);
+			return;
 		}
+
+		toast.success(response.message);
+		onCompleted();
 	};
 
 	const handleImage = async (e) => {
-
 		const serviceImage = e.target.files[0];
-		const data = new FormData();
-		const url = "https://api.cloudinary.com/v1_1/thevetdoctor/image/upload";
-		data.append("file", serviceImage);
-		data.append("upload_preset", "zunt8yrw");
-		const res = await fetch(url, {
-			method: "POST",
-			body: data
-		})
-			.catch(error => {
-				console.log(error.message);
-				if (error.message.search('Failed to fetch') >= 0) {
-					toast("Image upload failed!");
-				}
-			});
+		const response = await uploadImage(serviceImage);
 
-		if (res) {
-			console.log(res)
-		} else {
-			console.log('error');
+		if(response.error){
+			toast.error(response.error);
+			return;
 		}
 
-		const imgLink = await res.json();
-
-		setProfileImage(imgLink.secure_url)
+		setProfileImage(response?.data?.secure_url || '');
 	}
 
 	const handleChange = (e) => {
