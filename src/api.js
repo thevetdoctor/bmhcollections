@@ -1,40 +1,56 @@
 import axios from 'axios';
 
-export const submitInfo = async (payload) => {
+export const submitInfo = async (payload, update = false) => {
 	const baseUrl = 'https://us-central1-build-myhouse.cloudfunctions.net/bmhAPi';
+  let query;
 
-  const { firstName, lastName, mobile, email, profileImage, contactMessage, floorPlanTime, singleResidentialTime, projectUrl, projectWorkTime, charge } = payload;
-
-  const query = `
+  if(update) {
+    const { email, profileImage, projectImage, projectTitle, resumeUrl, charge } = payload;
+    console.log(payload)
+  query = `
     mutation {
-        createArchitectProfile(
-            firstname: "${firstName}",
-            lastname: "${lastName}",
-            mobile: "${mobile}",
+        updateArchitectProfile(
             email: "${email}",
-            description: "${contactMessage}",
             profileImage: "${profileImage}",
-            projectUrl: "${projectUrl}",
-            floorPlanTime: "${floorPlanTime}",
-            singleResidentialTime: "${singleResidentialTime}",
-            projectWorkTime: "${projectWorkTime}",
+            projectTitle: "${projectTitle}",
+            projectImage: "${projectImage}",
+            resumeUrl: "${resumeUrl}",
             charge: "${charge}"
         ) {
             id
             firstName
             lastName
             email
-            mobile
-            description
-            profileImage
-            projectUrl
-            floorPlanTime
-            singleResidentialTime
-            projectWorkTime
+            mobile,
+            profileImage,
+            projectTitle,
+            projectImage,
+            resumeUrl,
             charge
         }
     }`;
 
+  } else {
+
+    const { firstName, lastName, mobile, email } = payload;
+    
+    query = `
+    mutation {
+      createArchitectProfile(
+        firstName: "${firstName}",
+        lastName: "${lastName}",
+        mobile: "${mobile}",
+        email: "${email}"
+        ) {
+          id
+          firstName
+          lastName
+          email
+          mobile
+        }
+      }`;
+}
+      
     const headers = {
       'Content-Type': 'application/json'
     }
@@ -48,8 +64,13 @@ export const submitInfo = async (payload) => {
 
       const { data } = await axios.post(`${baseUrl}/graphql?query=${query}`, {}, headers);
 
-      if (data?.errors && (data?.errors[0]?.message.search('exist')) >= 0) {
-				response.message = "Already submitted!";
+      if (data?.errors) {
+        response.error = true;
+          if(data?.errors[0]?.message.search('exist') >= 0) {
+            response.message = "Already submitted!";
+          } else {
+            response.message = `${data?.errors[0]?.message}`;
+          } 
 			} else {
         response.message = "Submitted successfully!";
 			}
@@ -69,10 +90,10 @@ export const uploadImage = async (image) => {
   }
 
   const data = new FormData();
-  const url = "https://api.cloudinary.com/v1_1/thevetdoctor/image/upload";
+  const url = "https://api.cloudinary.com/v1_1/thevetdoctor/auto/upload";
   
   data.append("file", image);
-  data.append("upload_preset", "zunt8yrw");
+  data.append("upload_preset", "ugypxmkm");
 
   try {
 		const res = await fetch(url, {
@@ -84,7 +105,7 @@ export const uploadImage = async (image) => {
     response.data = uploadedImageData;
 
   } catch (error) {
-    response.error = "Image upload failed!";
+    response.error = "Upload failed!";
   }
 
   return response;

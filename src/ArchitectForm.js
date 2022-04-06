@@ -14,27 +14,16 @@ export default function ArchitectForm ({ onCompleted }) {
 	const [lastName, setLastName] = useState('');
 	const [mobile, setMobile] = useState('');
 	const [email, setEmail] = useState('');
-	const [floorPlanTime, setFloorPlanTime] = useState('');
-	const [singleResidentialTime, setSingleResidentialTime] = useState('');
-	const [projectUrl, setProjectUrl] = useState('');
-	const [projectWorkTime, setProjectWorkTime] = useState('');
-	const [charge, setCharge] = useState('');
-	const [contactMessage, setContactMessage] = useState('');
+	const [profileImage, setProfileImage] = useState('');
 	const [completed, setCompleted] = useState(null);
 	const [error, setError] = useState('');
 	const [submitted, setSubmitted] = useState(false);
-	const [profileImage, setProfileImage] = useState('');
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const setUp = async (e) => {
 		e.preventDefault();
 
-		if(!profileImage.length){
-			toast.error('Please upload a profile image');
-			return;
-		}
-
-		const fields = [firstName, lastName, mobile, email, profileImage, contactMessage, floorPlanTime, singleResidentialTime, projectUrl, projectWorkTime, charge];
+		const fields = [firstName, lastName, mobile, email];
 
 		const hasInvalidField = fields.some(field => !field.length);
 
@@ -43,33 +32,27 @@ export default function ArchitectForm ({ onCompleted }) {
 			return;
 		}
 
+		if(!email.match(/\S+@\S+\.\S+/)) {
+			toast.error('Please provide a valid email address');
+			return;
+		}
+
 		setSubmitting(true);
 	
-		const payload = { firstName, lastName, mobile, email, profileImage, contactMessage, floorPlanTime, singleResidentialTime, projectUrl, projectWorkTime, charge };
+		const payload = { firstName, lastName, mobile, email };
 
 		const response = await submitInfo(payload);
 		setSubmitting(false);
+		console.log(response);
 
 		if(response.error){
-			toast.error(error);
+			toast.error(response.message);
 			return;
 		}
 
 		toast.success(response.message);
 		onCompleted();
 	};
-
-	const handleImage = async (e) => {
-		const serviceImage = e.target.files[0];
-		const response = await uploadImage(serviceImage);
-
-		if(response.error){
-			toast.error(response.error);
-			return;
-		}
-
-		setProfileImage(response?.data?.secure_url || '');
-	}
 
 	const handleChange = (e) => {
 		const target = e.target;
@@ -81,19 +64,7 @@ export default function ArchitectForm ({ onCompleted }) {
 			setMobile(target.value);
 		} else if (target.name === 'email') {
 			setEmail(target.value);
-		} else if (target.name === 'floorplantime') {
-			setFloorPlanTime(target.value);
-		} else if (target.name === 'singleresidentialtime') {
-			setSingleResidentialTime(target.value);
-		} else if (target.name === 'projecturl') {
-			setProjectUrl(target.value);
-		} else if (target.name === 'projectworktime') {
-			setProjectWorkTime(target.value);
-		} else if (target.name === 'charge') {
-			setCharge(target.value);
-		} else if (target.name === 'contactmessage') {
-			setContactMessage(target.value);
-		}
+		} 
 	};
 
 	return (
@@ -115,7 +86,7 @@ export default function ArchitectForm ({ onCompleted }) {
 					</div>
 				</div>
 
-				<div className="text-lg text-center px-4 font-semibold mt-8">Create Profile</div>
+				<div className="text-lg text-center px-4 font-semibold mt-8">Can we meet you ?</div>
 
 				<form style={{ fontSize: "1.2em" }} className="text-md flex flex-col p-2 mb-1 md:w-1/2 mx-auto" id="contactForm">
 					<input type="text" id="ProfilePic" style={{ display: "none" }} />
@@ -138,53 +109,8 @@ export default function ArchitectForm ({ onCompleted }) {
 							<Required /></label>
 						<Input name="email" email={email} handleChange={handleChange} />
 					</div>
-					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-between py-2 mb-1">Kindly attach an image of yourself
-							<Required /></label>
-						<label style={{ width: '6em', fontSize: '1.1em' }} className={`font-bold cursor-pointer flex border border-2 ml-2 rounded-lg ${profileImage ? 'bg-white text-black' : 'bg-black text-white'}`}><span className='p-2 pr-3'>{profileImage ? 'Uploaded' : 'Upload'} </span> <span className='ml-2'></span>
-
-							<input type="file" style={{ fontSize: '1.4em' }} className="text-md hidden outline-none rounded" placeholder={profileImage ? profileImage : 'No file chosen'} value="" onChange={(e) => handleImage(e)} accept="image/*;capture" /></label>
-					</div>
-					<div className="text-md flex flex-col p-2">
-						<label className="text-base ">How would you describe yourself (kindly highlight your work strengths and weakness and how you want customers to view you)</label>
-						<textarea name="contactmessage" style={{ fontSize: '0.9em', height: '10em' }} className="rounded outline-none p-3 border resize-none focus:border focus:border-gray-500" value={contactMessage} onChange={handleChange}
-						></textarea>
-					</div>
-					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-betweenp-2 mb-1">Hypothetically speaking, how long would it take to finish a floor plan ( this gives us and the client an idea of how long to expect deliverables) (Architect,interior designer)<Required /></label>
-						<Input name="floorplantime" floorPlanTime={floorPlanTime} handleChange={handleChange} />
-					</div>
-					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-between p-2 mb-1">How much time do you think it will take to
-							accomplish a single residential property ( this helps us to know what the client
-							expects as far as speed is concerned?<Required /></label>
-						<Input name="singleresidentialtime" singleResidentialTime={singleResidentialTime} handleChange={handleChange} />
-					</div>
-					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex flex-col p-2 mb-1">Kindly attach a link to images of at most
-							10 best Jobs ( preferably un-watermarked, kindly note that each job, should have
-							different views, to give the client a detailed perspective of each job)</label>
-
-						<label className="text-md flex justify-between p-2">Instructions for image upload : Attach each
-							render/job in one folder, and do the same for other jobs, label each folder
-							according to the job e.g render for ikoyi palace, then place each folder into a
-							singular link ( which means it could get up to 10 folders in one link ) and attach
-							to the form<Required /></label>
-						<Input name="projecturl" projectUrl={projectUrl} handleChange={handleChange} />
-					</div>
-					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-between p-2 mb-1">How much time will you need to work on a
-							project to see results? ( this helps us know how to place deadlines, and how to
-							follow up on the job ).<Required /></label>
-						<Input name="projectworktime" projectWorkTime={projectWorkTime} handleChange={handleChange} />
-					</div>
-					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-between p-2 mb-1">How much do you charge per render i.e
-							(25,000 to 30,000).</label>
-						<Input name="charge" charge={charge} handleChange={handleChange} submitted={submitted} />
-					</div>
 					<br />
-					<div className="">
+					<div className="flex">
 						<button
 							className="text-white text-base w-full bg-black text-center mx-3 rounded p-2 hover:bg-gray-800 disabled:bg-gray-500 cursor-pointer mb-9 rounded-lg shadow-md contactSubmitButton"
 							onClick={setUp}

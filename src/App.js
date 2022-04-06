@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+// import { ToastContainer, toast } from 'react-toastify';
 import ArchitectForm from './ArchitectForm';
-
+import ArchitectDataForm from './ArchitectDataForm';
 
 function App() {
   const [showForm, setShowForm] = useState(true);
 
   const onCompleted = () => {
-    toast.success('Success');
+    // toast.success('Success');
     setShowForm(false);
   }
 
@@ -21,10 +22,19 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        { showForm ? <ArchitectForm onCompleted={onCompleted} /> : successContent }
+        <Router>
+          <Switch>
+            <Route path='/profileupdate/:dyno'>
+              { showForm ? <ArchitectDataForm onCompleted={onCompleted} /> : successContent }
+            </Route>
+            <Route exact path='/'>
+              { showForm ? <ArchitectForm onCompleted={onCompleted} /> : successContent }
+            </Route>
+          </Switch>
+        </Router>
       </header>
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 }
