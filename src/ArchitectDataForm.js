@@ -107,7 +107,7 @@ export default function ArchitectDataForm ({ onCompleted }) {
 				localStorage.setItem('projectImages', JSON.stringify([...storedImages, {name: projectTitle, url: publicId}]));
 				setProjectImages([...storedImages, {name: projectTitle, url: publicId}]);
 			} else {
-				localStorage.setItem('projectImages', JSON.stringify([publicId]));
+				localStorage.setItem('projectImages', JSON.stringify([{name: projectTitle, url: publicId}]));
 				setProjectImages([{name: projectTitle, url: publicId}]);
 			}
 			setProjectTitle('');
