@@ -15,6 +15,7 @@ export default function ArchitectForm ({ onCompleted }) {
 	const [mobile, setMobile] = useState('');
 	const [email, setEmail] = useState('');
 	const [profileImage, setProfileImage] = useState('');
+	const [profession, setProfession] = useState('');
 	const [completed, setCompleted] = useState(null);
 	const [error, setError] = useState('');
 	const [submitted, setSubmitted] = useState(false);
@@ -32,6 +33,11 @@ export default function ArchitectForm ({ onCompleted }) {
 			return;
 		}
 
+		if (profession === 'Select Profession' || profession === "") {
+			toast.error('Please select profession');
+			return;
+		}
+
 		if(!email.match(/\S+@\S+\.\S+/)) {
 			toast.error('Please provide a valid email address');
 			return;
@@ -39,11 +45,10 @@ export default function ArchitectForm ({ onCompleted }) {
 
 		setSubmitting(true);
 	
-		const payload = { firstName, lastName, mobile, email };
+		const payload = { firstName, lastName, mobile, email, profession };
 
 		const response = await submitInfo(payload);
 		setSubmitting(false);
-		console.log(response);
 
 		if(response.error){
 			toast.error(response.message);
@@ -64,29 +69,35 @@ export default function ArchitectForm ({ onCompleted }) {
 			setMobile(target.value);
 		} else if (target.name === 'email') {
 			setEmail(target.value);
-		} 
+		} else if (target.name === 'profession') {
+			setProfession(target.value)
+		}
 	};
+
+	const professions= ['Select Profession', 'Architect', 'Quantity surveyor', 'Project manager', '3D visualist'];
 
 	return (
 		<div>
 			<div style={{ fontSize: "0.5em" }} className="bg-white">
-				<ToastContainer />
-				<div className='flex justify-between m-4'>
+				<div style={{fontSize: "1.9em"}}>
+					<ToastContainer />
+				</div>
+				<div className='flex justify-between m-2'>
 					<div><img src={logo} style={{ width: '5em', marginTop: '1.1em' }} alt='alt' /></div>
-					<div className='flex mt-3 mr-3'>
-						<span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer flex align-center shadow-lg p-3 border'>
+					<div className='flex mt-1 mr-3'>
+						<span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer flex align-center shadow-lg p-5 border'>
 							<span className=''><FaShareAlt size={15} /></span>
 						</span>
-						<span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer ml-2 shadow-lg p-3 border'>
-							<span className='mt-2'><FaMoon size={13} /></span>
+						{/* <span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer ml-2 shadow-lg p-3 border'>
+							<span className='mt-2'><FaMoon size={18} /></span>
 						</span>
 						<span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer ml-2 shadow-lg p-3 border'>
 							<span className='mt-2'><IoArrowBack size={18} /></span>
-						</span>
+						</span> */}
 					</div>
 				</div>
 
-				<div className="text-lg text-center px-4 font-semibold mt-8">Can we meet you ?</div>
+				<div className="text-lg text-center px-4 font-semibold mt-4">Can we meet you ?</div>
 
 				<form style={{ fontSize: "1.2em" }} className="text-md flex flex-col p-2 mb-1 md:w-1/2 mx-auto" id="contactForm">
 					<input type="text" id="ProfilePic" style={{ display: "none" }} />
@@ -110,6 +121,18 @@ export default function ArchitectForm ({ onCompleted }) {
 						<Input name="email" email={email} handleChange={handleChange} />
 					</div>
 					<br />
+					<select
+						// label='Profession'
+						name='profession'
+						value={profession}
+						onChange={handleChange}
+						className='focus-none focus:border focus:border-gray-500 outline-none rounded-lg border p-3 mt-2'
+					>
+						{professions.map((profession, idx) => (
+						<option className='text-md bg-white' key={idx} value={profession}>{profession}</option>
+						))}
+					</select>
+					<br /><br />
 					<div className="flex">
 						<button
 							className="text-white text-base w-full bg-black text-center mx-3 rounded p-2 hover:bg-gray-800 disabled:bg-gray-500 cursor-pointer mb-9 rounded-lg shadow-md contactSubmitButton"
@@ -147,7 +170,7 @@ const DisplayModal = () => (
 			<Modal.Body style={{ textAlign: 'justify', width: '50%' }} className='pt-0 p-2'>
 
 				<div className='card-text'>
-					Your submission was successful..A member of BMH would get back to you soon
+					Your submission was successful..Please check your email for the next steps!
 				</div>
 			</Modal.Body>
 		</Modal>
