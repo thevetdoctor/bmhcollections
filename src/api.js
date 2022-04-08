@@ -5,8 +5,11 @@ export const submitInfo = async (payload, update = false) => {
   let query;
 
   if(update) {
-    const { email, profileImage, projectImage, projectTitle, resumeUrl, charge } = payload;
-    console.log(payload)
+		let storedImages = JSON.parse(localStorage.getItem('projectImages'));
+    let projectTitle = storedImages.map(image => image.name).join(':');
+    let projectImage = storedImages.map(image => image.url.replace('bmh_architects/', '')).join(':');
+
+    const { email, profileImage, resumeUrl, charge } = payload;
   query = `
     mutation {
         updateArchitectProfile(
@@ -66,7 +69,7 @@ export const submitInfo = async (payload, update = false) => {
 
       if (data?.errors) {
         response.error = true;
-          if(data?.errors[0]?.message.search('exist') >= 0) {
+          if(data?.errors[0]?.message.search('exist') >= 0 || data?.errors[0]?.message.search('Not found') >= 0) {
             response.message = "Already submitted!";
           } else {
             response.message = `${data?.errors[0]?.message}`;
