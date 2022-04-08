@@ -200,7 +200,7 @@ export default function ArchitectDataForm ({ onCompleted }) {
 						)) }
 						{(projectImages.length < 30) ?
 						(<>
-							<div style={{fontSize: '1.3em'}} className='mt-6 mb-3'>Upload images for your projects (max. 30)</div>
+							<div style={{fontSize: '1.3em'}} className='mt-6 mb-3'>Upload images of your projects (max. 30)</div>
 							<Input name="projectTitle" values={projectTitle} placeholder="Enter Project/Image Title" handleChange={handleChange} submitted={submitted} />
 							<label className="text-md flex justify-between mb-1">
 								<span className='flex justify-center mt-1 p-2 '>
