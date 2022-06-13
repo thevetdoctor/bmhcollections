@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.a5ff6ba2.css",
-    "main.js": "/static/js/main.e7c696b6.js",
+    "main.js": "/static/js/main.bd45408b.js",
     "static/js/787.95d5a5fc.chunk.js": "/static/js/787.95d5a5fc.chunk.js",
     "static/media/bmh-blue-1.png": "/static/media/bmh-blue-1.f59b5f2f37fbe4e1d1ac.png",
     "index.html": "/index.html",
     "main.a5ff6ba2.css.map": "/static/css/main.a5ff6ba2.css.map",
-    "main.e7c696b6.js.map": "/static/js/main.e7c696b6.js.map",
+    "main.bd45408b.js.map": "/static/js/main.bd45408b.js.map",
     "787.95d5a5fc.chunk.js.map": "/static/js/787.95d5a5fc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a5ff6ba2.css",
-    "static/js/main.e7c696b6.js"
+    "static/js/main.bd45408b.js"
   ]
 }

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import ArchitectForm from './ArchitectForm';
+import QuickList from './QuickList';
 import ArchitectDataForm from './ArchitectDataForm';
 
 function App() {
@@ -37,6 +38,9 @@ function App() {
             </Route>
             <Route exact path='/'>
               { showForm ? <ArchitectForm onCompleted={onCompleted} /> : successContent }
+            </Route>
+            <Route exact path='/quicklist'>
+              <QuickList onCompleted={onCompleted} />
             </Route>
           </Switch>
         </Router>
