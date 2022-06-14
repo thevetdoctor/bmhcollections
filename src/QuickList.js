@@ -6,7 +6,7 @@ import { IoArrowBack } from 'react-icons/io5';
 import { Modal } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { submitQuicklist } from './quicklistApi';
-import logo from './bg-yellow-1.jpg';
+import logo from './bmh-blue-1.png';
 import bg from './bg.png';
 
 export default function ArchitectForm ({ onCompleted }) {
@@ -68,7 +68,7 @@ export default function ArchitectForm ({ onCompleted }) {
 
 	return (
 		<div className='pb-3 -mb-3'>
-			<div style={{ color: '#001221', fontSize: "0.5em", backgroundImage: `url(${bg})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', marginTop: '-2em'  }} className="bg-white">
+			<div style={{ color: '#001221', fontSize: "0.5em", backgroundImage: `url(${bg})`, backgroundRepeat: 'no-repeat', height: '900px', backgroundPosition: 'center', backgroundSize: 'cover', marginTop: '-2em'  }} className="bg-white">
 				<div style={{fontSize: "1.9em"}}>
 					<ToastContainer />
 				</div>
