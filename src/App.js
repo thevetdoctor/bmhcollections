@@ -21,6 +21,13 @@ function App() {
     </div>
   )
 
+  const successQuicklist = (
+    <div className="mx-auto w-11/12 md:w-1/3 px-6 py-10 text-center border my-20 rounded">
+      <p className='text-lg font-semibold'>Your submission was successful</p>
+      <p className='opacity-50'>Expect to hear from us soon!</p>
+    </div>
+  )
+
   const uploadSuccessContent = (
     <div className="mx-auto w-11/12 md:w-1/3 px-6 py-10 text-center border my-20 rounded">
       <p className='text-lg font-semibold'>Your submission was successful</p>
@@ -40,7 +47,7 @@ function App() {
               { showForm ? <ArchitectForm onCompleted={onCompleted} /> : successContent }
             </Route>
             <Route exact path='/quicklist'>
-              <QuickList onCompleted={onCompleted} />
+              { showForm ? <QuickList onCompleted={onCompleted} /> : successQuicklist }
             </Route>
           </Switch>
         </Router>

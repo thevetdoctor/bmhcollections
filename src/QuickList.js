@@ -6,7 +6,8 @@ import { IoArrowBack } from 'react-icons/io5';
 import { Modal } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { submitQuicklist } from './quicklistApi';
-import logo from './bmh-blue-1.png';
+import logo from './bg-yellow-1.jpg';
+import bg from './bg.png';
 
 export default function ArchitectForm ({ onCompleted }) {
 
@@ -66,42 +67,40 @@ export default function ArchitectForm ({ onCompleted }) {
 	};
 
 	return (
-		<div>
-			<div style={{ fontSize: "0.5em" }} className="bg-white">
+		<div className='pb-3 -mb-3'>
+			<div style={{ color: '#001221', fontSize: "0.5em", backgroundImage: `url(${bg})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', marginTop: '-2em'  }} className="bg-white">
 				<div style={{fontSize: "1.9em"}}>
 					<ToastContainer />
 				</div>
-				<div className='flex justify-between m-2'>
-					<div><img src={logo} style={{ width: '5em', marginTop: '1.1em' }} alt='alt' /></div>
-					<div className='flex mt-1 mr-3'>
-						<span style={{ borderRadius: '50%' }} className='hover:bg-gray-200 cursor-pointer flex align-center shadow-lg p-5 border'>
-							<span className=''><FaShareAlt size={15} /></span>
-						</span>
-					</div>
+				<div className='flex justify-between m-0'>
+					<div><img src={logo} style={{ width: '6em', marginLeft: '0em', marginTop: '1.5em', fontSize: '1.5em' }} alt='alt' /></div>
 				</div>
 
-				<div className="text-lg text-center px-4 font-semibold mt-4">
-					<p><br />Discounts and Special Offers!</p> 
-					<p><br />Be the first to know!</p> 
+				<div style={{color: '#001221', fontSize: '3em'}} className="text-lg text-center px-4 font-semibold">
+					<p>Hey You,</p> 
+					<p>Join our Tribe!</p> 
 				</div>
 
-				<form style={{ fontSize: "1.2em" }} className="text-md flex flex-col p-2 mb-1 md:w-1/2 mx-auto" id="contactForm">
+				<div className='mr-6 ml-6'>
+				<form style={{color: '#001221', fontSize: "1em", background: '#fff', margin: '2em auto', height: '75em' }} className="text-md flex flex-col p-2 mb-1 md:w-1/2 mx-auto" id="contactForm">
+					<h2 className='font-semibold text-lg text-center'>Enjoy 10% and free delivery off your first purchase</h2>
+					<span className='text-md text-center text-lg'>Be the first to know about new arrivals and special discounts!!</span> 
 					<input type="text" id="ProfilePic" style={{ display: "none" }} />
 					<div className="text-md flex flex-col p-2">
 						<label className="text-md flex justify-between py-2 py-3 mb-0"><span>Firstname </span><Required /></label>
 						<Input name="firstname" firstName={firstName} handleChange={handleChange} />
 					</div>
 					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-between py-2 mb-1"><span>Lastname</span>
+						<label className="text-md flex justify-between py-2 mb-0"><span>Lastname</span>
 							<Required /></label>
 						<Input name="lastname" lastName={lastName} handleChange={handleChange} />
 					</div>
 					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-between py-2 mb-1">Mobile<Required /></label>
+						<label className="text-md flex justify-between py-2 mb-0">Mobile<Required /></label>
 						<Input name="mobile" mobile={mobile} handleChange={handleChange} />
 					</div>
 					<div className="text-md flex flex-col p-2">
-						<label className="text-md flex justify-between py-2 mb-1">Email
+						<label className="text-md flex justify-between py-2 mb-0">Email
 							<Required /></label>
 						<Input name="email" email={email} handleChange={handleChange} />
 					</div>
@@ -109,12 +108,13 @@ export default function ArchitectForm ({ onCompleted }) {
 					<br /><br />
 					<div className="flex">
 						<button
-							className="text-white text-base w-full bg-black text-center mx-3 rounded p-2 hover:bg-gray-800 disabled:bg-gray-500 cursor-pointer mb-9 rounded-lg shadow-md contactSubmitButton"
+							style={{background: '#f79406', disabled: 'gray'}}
+							className="text-white text-base w-full text-center mx-3 rounded p-2 hover:bg-gray-800 disabled:bg-gray-500 cursor-pointer mb-2 rounded-lg shadow-md contactSubmitButton"
 							onClick={setUp}
 							disabled={isSubmitting}
 						>{ isSubmitting ? 'Submitting' : 'Submit' }</button>
 					</div>
-				</form>
+				</form></div>
 			</div>
 		</div>
 	)
