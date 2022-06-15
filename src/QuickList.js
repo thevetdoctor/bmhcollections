@@ -32,8 +32,20 @@ export default function ArchitectForm ({ onCompleted }) {
 			return;
 		}
 
+		if(!mobile.match(/\d{11}/)) {
+			toast.error(`Mobile must be exactly 11 digits!`);
+			return;
+		}
+		// if(mobile.length <= 10 || mobile.length >= 12) {
+		// 	if(!mobile.match(/\d{11}/)) {
+		// 		toast.error(`Mobile must be exactly 11 digits!`);
+		// 		return;
+		// 	}
+		// 	toast.error(`Mobile must be exactly 11 digits!', ${mobile.length}`);
+		// 	return;
+		// }
 		if(!email.match(/\S+@\S+\.\S+/)) {
-			toast.error('Please provide a valid email address');
+			toast.error('Please provide a valid email address!');
 			return;
 		}
 
@@ -45,10 +57,18 @@ export default function ArchitectForm ({ onCompleted }) {
 		setSubmitting(false);
 
 		if(response.error){
-			toast.error(response.message);
+			if(response.message.search('email') >= 0) {
+				toast.error('Please confirm email is valid!');
+				return;
+			} else {
+				toast.error(response.message);
+				return;
+			}
+		}
+		if(response.message.search('email') >= 0) {
+			toast.error('Please confirm email is valid!');
 			return;
 		}
-
 		toast.success(response.message);
 		onCompleted();
 	};
@@ -56,23 +76,23 @@ export default function ArchitectForm ({ onCompleted }) {
 	const handleChange = (e) => {
 		const target = e.target;
 		if (target.name === 'firstname') {
-			setFirstName(target.value);
+			setFirstName(target.value.trim());
 		} else if (target.name === 'lastname') {
-			setLastName(target.value);
+			setLastName(target.value.trim());
 		} else if (target.name === 'mobile') {
-			setMobile(target.value);
+			setMobile(target.value.trim());
 		} else if (target.name === 'email') {
-			setEmail(target.value);
+			setEmail(target.value.trim());
 		}
 	};
 
 	return (
 		<div className='pb-3 -mb-3'>
-			<div style={{ color: '#001221', fontSize: "0.5em", backgroundImage: `url(${bg})`, backgroundRepeat: 'no-repeat', height: '900px', backgroundPosition: 'center', backgroundSize: 'cover', marginTop: '-2em'  }} className="bg-white">
+			<div style={{ color: '#001221', fontSize: "0.5em", backgroundImage: `url(${bg})`, backgroundRepeat: 'no-repeat', height: '980px', backgroundPosition: 'center', backgroundSize: 'cover', marginTop: '-2em'  }} className="bg-white">
 				<div style={{fontSize: "1.9em"}}>
 					<ToastContainer />
 				</div>
-				<div className='flex justify-between m-0'>
+				<div className='flex justify-between'>
 					<div><img src={logo} style={{ width: '6em', marginLeft: '0em', marginTop: '1.5em', fontSize: '1.5em' }} alt='alt' /></div>
 				</div>
 
